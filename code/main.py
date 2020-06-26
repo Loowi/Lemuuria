@@ -1,7 +1,6 @@
 from game import Game
 from player import Player
 import time
-from tensorflow import keras
 from pathlib import Path
 from logging import getLogger
 import onnxruntime

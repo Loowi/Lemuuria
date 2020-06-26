@@ -5,7 +5,6 @@ from game import Game
 # import anxilliaryfunctions as af
 import library as lib
 from pathlib import WindowsPath
-from tensorflow import keras
 from enum import Enum
 import numpy as np
 from logging import getLogger

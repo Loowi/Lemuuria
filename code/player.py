@@ -7,8 +7,6 @@ import chess
 import numpy as np
 import random
 from pathlib import WindowsPath
-from tensorflow import keras
-# import anxilliaryfunctions as af
 import library as lib
 from enum import Enum
 from mcts import MctsTree

@@ -6,7 +6,6 @@ import chess.pgn
 import numpy as np
 import copy
 import chess
-# import anxilliaryfunctions as af
 import library as lib
 import onnxruntime
 
