@@ -2,7 +2,8 @@ from collections import defaultdict
 import random
 import chess
 from game import Game
-import anxilliaryfunctions as af
+# import anxilliaryfunctions as af
+import library as lib
 from pathlib import WindowsPath
 from tensorflow import keras
 from enum import Enum
@@ -53,7 +54,7 @@ class MctsTree:
         board = chess.Board(self.fen)
         moves = [str(x) for x in list(board.legal_moves)]
 
-        gameState = af.fenToTensor(self.fen)
+        gameState = lib.fenToTensor(self.fen)
         inputState = np.expand_dims(gameState, axis=0)
         inputState = inputState.astype(np.float32)
         
@@ -65,7 +66,7 @@ class MctsTree:
 
         # policy, value = self.model.predict(inputState)
 
-        finalDict, enumDict = af.createMoveDict()
+        finalDict, enumDict = lib.createMoveDict()
         values = {move: policy[0][enumDict[move].value] for move in moves}
 
         self.board_value = value

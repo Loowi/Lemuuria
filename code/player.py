@@ -8,7 +8,8 @@ import numpy as np
 import random
 from pathlib import WindowsPath
 from tensorflow import keras
-import anxilliaryfunctions as af
+# import anxilliaryfunctions as af
+import library as lib
 from enum import Enum
 from mcts import MctsTree
 import onnxruntime
@@ -46,13 +47,13 @@ class Player:
                 self.update_values(result)
 
             else:  # pick a child and go deeper
-                node = next_step(x):
+                node = self.next_step(x)
 
         move = self.returnBestMove()
 
         return move
 
-    def game_over(self, fen): # place all your conditions here
+    def game_over(self, fen):  # place all your conditions here
         board = chess.Board(fen)
         finished = board.is_game_over()
         result = board.result()
@@ -70,6 +71,7 @@ class Player:
         for child in children:
             if child.adjust_value > best_value:  # should be probability based
                 best_move = child.move
+        return best_move
 
     def update_values(self, node):  # recursion
         if node.parent:
@@ -78,7 +80,6 @@ class Player:
             return(update_values(mean_value))
         else:
             return 1
-
 
     def moveSimple(self, fen, enumDict):  # Create legitimate moves and pick one
         board = chess.Board(fen)
@@ -91,7 +92,7 @@ class Player:
             return move, value
 
         else:
-            fen = af.fenToTensor(fen)
+            fen = lib.fenToTensor(fen)
             inputState = np.expand_dims(fen, axis=0)
             inputState = inputState.astype(np.float32)
 
@@ -111,27 +112,3 @@ class Player:
             self.moves.append(move)
 
             return move, value
-
-
-# def moveSimple(self, fen, enumDict):  # Create legitimate moves and pick one
-#         board = chess.Board(fen)
-#         if self.model is None:
-#             moves = list(board.legal_moves)
-#             move = random.choice(moves)
-#             self.moves.append(move)
-#             value = np.nan
-
-#             return move, value
-
-#         else:
-#             fen = af.fenToTensor(fen)
-#             inputState = np.expand_dims(fen, axis=0)
-#             policy, value = self.model.predict(inputState)
-
-#             # Move with the highest value: find legit moves, max index and lookup in the dict
-#             moves = [str(x) for x in list(board.legal_moves)]
-#             kala = {move: policy[0][enumDict[move].value] for move in moves}
-#             move = max(kala, key=kala.get)
-#             self.moves.append(move)
-
-#             return move, value

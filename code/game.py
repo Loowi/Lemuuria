@@ -6,7 +6,8 @@ import chess.pgn
 import numpy as np
 import copy
 import chess
-import anxilliaryfunctions as af
+# import anxilliaryfunctions as af
+import library as lib
 import onnxruntime
 
 from logging import getLogger
@@ -38,7 +39,7 @@ class Game:
         self.enumDict = self.createMoveDict()
 
     def createMoveDict(self):
-        finalDict, enumDict = af.createMoveDict()
+        finalDict, enumDict = lib.createMoveDict()
         return enumDict
 
     def step(self, move):
@@ -64,7 +65,7 @@ class Game:
             fen = game.board.fen()
             if self.white_to_move:
                 
-                kala = self.Player1.mtscMove(fen, self.Player1, enumDict)
+                # kala = self.Player1.mtscMove(fen, self.Player1, enumDict)
                 print(1, kala)
                 print(12345)
 

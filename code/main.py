@@ -2,16 +2,14 @@ from game import Game
 from player import Player
 import time
 from tensorflow import keras
-from pathlib import WindowsPath
+from pathlib import Path
 from logging import getLogger
 import onnxruntime
 
 
 logger = getLogger(__name__)
-# inputPath = WindowsPath('C:/Users/Watson/Projects/remus/input/pkl_games/')
-# model = keras.models.load_model((inputPath / 'watsonBrainNew'))
-
-session = onnxruntime.InferenceSession('model.onnx', None)
+inputPath = Path('C:/Users/Watson/Projects/lemuuria/input/')
+session = onnxruntime.InferenceSession(str(inputPath / 'model.onnx'), None)
 
 t0 = time.time()
 for i in range(1):
