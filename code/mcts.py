@@ -77,6 +77,5 @@ class MctsTree:
             node = MctsTree(self.session, boardTemp, prior_probability, move)
             self.children.append(node)
 
-        kala2 = 5
 
  

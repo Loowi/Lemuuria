@@ -20,6 +20,3 @@ t1 = time.time()
 
 total_n = t1-t0
 print("Cumulative time:", total_n)
-
-game.display_pgn()
-game.board

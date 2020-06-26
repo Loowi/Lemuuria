@@ -8,12 +8,15 @@ import copy
 import chess
 import library as lib
 import onnxruntime
+from IPython.display import display, HTML, clear_output
+import time
+
 
 from logging import getLogger
 
 logger = getLogger(__name__)
 
-finalDict, enumDict = af.createMoveDict()
+finalDict, enumDict = lib.createMoveDict()
 
 
 class Game:
@@ -56,23 +59,31 @@ class Game:
         print(pgn)
         # https://chesstempo.com/pgn-viewer/
 
+    def display_board(self, board):
+        return board._repr_svg_()
+    
     def play_game(self, game):
 
         while not self.finished:
-            print(123)
-
             fen = game.board.fen()
             if self.white_to_move:
                 
                 # kala = self.Player1.mtscMove(fen, self.Player1, enumDict)
-                print(1, kala)
-                print(12345)
+                # print(1, kala)
 
                 move, value = self.Player1.moveSimple(fen, enumDict)
-                print('Board value:', value)
             else:
                 move, value = self.Player2.moveSimple(fen, enumDict)
-                print('Board value:', value)
 
             self.step(move)
             self.game_over()
+
+            board_stop = self.display_board(self.board)
+            html = "<b>Move %s, Value: %s </b><br/>%s" % (
+                len(self.board.move_stack), value, board_stop)
+            time.sleep(0.5)
+            clear_output(wait=True)
+            display(HTML(html))
+            
+
+            
