@@ -30,27 +30,31 @@ class Player:
         return root
 
     def mtscMove(self, fen, enumDict):
-        for i in range(3):
+        for i in range(200):
             if i == 0:
                 root = self.createNodes(fen)
                 node = self.createNodes(fen)
-                # print(1, node)
-
-            # print(2, node.fen)
+                
+            # print('Summary:', node.move, node.fen)
             finished, result = self.game_over(node.fen)
 
             if finished:  # recursion to the top, update values based on result
-                self.update_values(result)  # todo: recursion
+                # print('End')
+                node = self.update_values(node)  # todo: recursion
 
             elif not node.children:  # Spawn a child and recursion to the top
-                self.createNodes(fen)
-                self.update_values(node)
+                # print('No children')
+                node.addChildren(node)
+                node = self.update_values(node)
 
             else:  # pick a child and go deeper
+                # print('Explore')
                 node = self.next_step(node)
 
-        move = self.returnBestMove(root.children)
-        value = 1
+        node = self.update_values(node)
+        # print('BestMove:', len(node.children), node.move, node.fen)
+        move = self.returnBestMove(node.children)
+        value = node.mean_value
 
         return move, value
 
@@ -71,16 +75,17 @@ class Player:
         best_value = -np.inf
         for child in children:
             if child.adjust_value > best_value:  # should be probability based
+                best_value = child.adjust_value
                 best_move = child.move
-        return best_move
+        return best_move       
 
     def update_values(self, node):  # recursion
         if node.parent:
             parent = node.parent
-            parent.value = parent.mean_value + node.mean_value
-            return(self.update_values(node))
+            parent.calcValue(node.total_value)
+            return(self.update_values(parent))
         else:
-            return 1
+            return node
 
     def moveSimple(self, fen, enumDict):  # Create legitimate moves and pick one
         board = chess.Board(fen)

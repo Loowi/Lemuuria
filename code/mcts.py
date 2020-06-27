@@ -30,7 +30,7 @@ class MctsTree:
         self.prior_prob = prior_prob
         self.num_visits = 0
         self.total_value = 0
-        self.mean_value = prior_prob
+        self.mean_value = 0
         self.adjust_value = self.mean_value + (1.5 * self.prior_prob)
 
     def __repr__(self):
@@ -58,10 +58,10 @@ class MctsTree:
         inputState = inputState.astype(np.float32)
         
         input_name = self.session.get_inputs()[0].name
-        output_name_1 = self.session.get_outputs()[0].name
-        output_name_2 = self.session.get_outputs()[1].name
+        output_1 = self.session.get_outputs()[0].name
+        output_2 = self.session.get_outputs()[1].name
         
-        policy, value = self.session.run([output_name_1, output_name_2], {input_name: inputState})
+        policy, value = self.session.run([output_1, output_2], {input_name: inputState})
 
         finalDict, enumDict = lib.createMoveDict()
         values = {move: policy[0][enumDict[move].value] for move in moves}
@@ -69,10 +69,10 @@ class MctsTree:
         self.board_value = value
 
         for move in values.keys():
-            boardTemp = chess.Board(self.fen)
-            boardTemp.push(chess.Move.from_uci(move))
+            brd = chess.Board(self.fen)
+            brd.push(chess.Move.from_uci(move))
             prior_probability = values[move]
-            node = MctsTree(self.session, boardTemp.fen(), prior_probability, move)
+            node = MctsTree(self.session, brd.fen(), prior_probability, move, parent)
             self.children.append(node)
 
 
