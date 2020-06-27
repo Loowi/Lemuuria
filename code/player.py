@@ -29,12 +29,14 @@ class Player:
         root.addChildren(root)
         return root
 
-    def mtscMove(self, fen, player, enumDict):
-        for i in range(10):
+    def mtscMove(self, fen, enumDict):
+        for i in range(3):
             if i == 0:
+                root = self.createNodes(fen)
                 node = self.createNodes(fen)
-                print(1, node)
+                # print(1, node)
 
+            # print(2, node.fen)
             finished, result = self.game_over(node.fen)
 
             if finished:  # recursion to the top, update values based on result
@@ -42,14 +44,15 @@ class Player:
 
             elif not node.children:  # Spawn a child and recursion to the top
                 self.createNodes(fen)
-                self.update_values(result)
+                self.update_values(node)
 
             else:  # pick a child and go deeper
-                node = self.next_step(x)
+                node = self.next_step(node)
 
-        move = self.returnBestMove()
+        move = self.returnBestMove(root.children)
+        value = 1
 
-        return move
+        return move, value
 
     def game_over(self, fen):  # place all your conditions here
         board = chess.Board(fen)
@@ -57,7 +60,7 @@ class Player:
         result = board.result()
         return finished, result
 
-    def next_step(self, x):
+    def next_step(self, node):
         probs = [child.adjust_value for child in node.children]
         probs = np.array(probs)
         probs /= probs.sum()
@@ -65,7 +68,7 @@ class Player:
         return node
 
     def returnBestMove(self, children):
-        best_value = -inf
+        best_value = -np.inf
         for child in children:
             if child.adjust_value > best_value:  # should be probability based
                 best_move = child.move
@@ -75,7 +78,7 @@ class Player:
         if node.parent:
             parent = node.parent
             parent.value = parent.mean_value + node.mean_value
-            return(update_values(mean_value))
+            return(self.update_values(node))
         else:
             return 1
 
@@ -100,8 +103,6 @@ class Player:
 
             policy, value = self.session.run(
                 [output_name_1, output_name_2], {input_name: inputState})
-
-            # policy, value = self.model.predict(inputState)
 
             # Move with the highest value: find legit moves, max index and lookup in the dict
             moves = [str(x) for x in list(board.legal_moves)]

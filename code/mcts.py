@@ -63,8 +63,6 @@ class MctsTree:
         
         policy, value = self.session.run([output_name_1, output_name_2], {input_name: inputState})
 
-        # policy, value = self.model.predict(inputState)
-
         finalDict, enumDict = lib.createMoveDict()
         values = {move: policy[0][enumDict[move].value] for move in moves}
 
@@ -74,7 +72,7 @@ class MctsTree:
             boardTemp = chess.Board(self.fen)
             boardTemp.push(chess.Move.from_uci(move))
             prior_probability = values[move]
-            node = MctsTree(self.session, boardTemp, prior_probability, move)
+            node = MctsTree(self.session, boardTemp.fen(), prior_probability, move)
             self.children.append(node)
 
 

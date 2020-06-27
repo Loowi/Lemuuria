@@ -1,3 +1,4 @@
+import chessModel
 from collections import OrderedDict
 import numpy as np
 from collections import defaultdict
@@ -5,7 +6,7 @@ from enum import Enum
 
 
 def convertMoves(moves):
-    moveLabels = create_uci_labels()
+    moveLabels = chessModel.create_uci_labels()
     labelDict = OrderedDict([(i, 0) for i in moveLabels])
 
     # Create function to convert one value
@@ -61,7 +62,7 @@ def fenToTensor(input):
 
 def createMoveDict():
     # Create dictionary, label as a key, numpy array as a value
-    moveLabels = create_uci_labels()
+    moveLabels = chessModel.create_uci_labels()
     labelDict = OrderedDict([(i, np.float16(0.0)) for i in moveLabels])
 
     def convertMoves(move, labels):

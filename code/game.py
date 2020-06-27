@@ -61,6 +61,20 @@ class Game:
 
     def display_board(self, board):
         return board._repr_svg_()
+
+    def display_game(self, value):
+        board_stop = self.display_board(self.board)
+        html = "<b>Move %s, Value: %s </b><br/>%s" % (
+            len(self.board.move_stack), value, board_stop)
+        time.sleep(0.5)
+        clear_output(wait=True)
+        display(HTML(html))
+
+    def save_pics(self):
+        boardsvg = chess.svg.board(self.board)
+        fileName = 'Move_' + str(self.num_halfmoves) + '.svg'
+        with open(fileName, 'w') as writer:
+            writer.write(boardsvg)
     
     def play_game(self, game):
 
@@ -71,19 +85,17 @@ class Game:
                 # kala = self.Player1.mtscMove(fen, self.Player1, enumDict)
                 # print(1, kala)
 
-                move, value = self.Player1.moveSimple(fen, enumDict)
+                # move, value = self.Player1.moveSimple(fen, enumDict)
+
+                move, value = self.Player1.mtscMove(fen, enumDict)
+
             else:
                 move, value = self.Player2.moveSimple(fen, enumDict)
 
             self.step(move)
             self.game_over()
-
-            board_stop = self.display_board(self.board)
-            html = "<b>Move %s, Value: %s </b><br/>%s" % (
-                len(self.board.move_stack), value, board_stop)
-            time.sleep(0.5)
-            clear_output(wait=True)
-            display(HTML(html))
+            self.display_game(value)
+            # self.save_pics()
             
-
+            
             
