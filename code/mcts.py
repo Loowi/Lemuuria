@@ -18,7 +18,7 @@ class MctsTree:
     The node that stores move and state information required for MCTS
     """
 
-    def __init__(self, session, fen, prior_prob=np.nan, move=None, parent=None):
+    def __init__(self, session, fen, prior_prob=0, move=None, parent=None, board_value=None):
         self.fen = fen  # chess.Board(fen)
         self.children = []
         self.session = session
@@ -28,6 +28,7 @@ class MctsTree:
         self.white_to_move = 1
 
         self.prior_prob = prior_prob
+        self.board_value = board_value
         self.num_visits = 0
         self.total_value = 0
         self.mean_value = 0
@@ -42,7 +43,7 @@ class MctsTree:
 
     def calcValue(self, new_value):
         self.num_visits += 1
-        self.total_value = np.nansum(new_value + self.total_value)
+        self.total_value = new_value + self.total_value
         self.mean_value = self.total_value / self.num_visits
 
         add_on = (1.5 * self.prior_prob *
@@ -72,7 +73,9 @@ class MctsTree:
             brd = chess.Board(self.fen)
             brd.push(chess.Move.from_uci(move))
             prior_probability = values[move]
-            node = MctsTree(self.session, brd.fen(), prior_probability, move, parent)
+            node = MctsTree(session=self.session, fen=brd.fen(), 
+                            prior_prob=prior_probability, move=move, 
+                            parent=parent, board_value=self.board_value)
             self.children.append(node)
 
 

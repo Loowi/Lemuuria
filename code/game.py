@@ -66,7 +66,7 @@ class Game:
         board_stop = self.display_board(self.board)
         html = "<b>Move %s, Value: %s </b><br/>%s" % (
             len(self.board.move_stack), value, board_stop)
-        time.sleep(0.5)
+        # time.sleep(0.5)
         clear_output(wait=True)
         display(HTML(html))
 
@@ -94,7 +94,7 @@ class Game:
 
             self.step(move)
             self.game_over()
-            self.display_game(value)
+            # self.display_game(value)
             # self.save_pics()
             
             
