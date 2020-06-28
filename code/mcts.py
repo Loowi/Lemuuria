@@ -64,6 +64,8 @@ class MctsTree:
         
         policy, value = self.session.run([output_1, output_2], {input_name: inputState})
 
+        value = value.item() # todo: probably has to go
+
         finalDict, enumDict = lib.createMoveDict()
         values = {move: policy[0][enumDict[move].value] for move in moves}
 
@@ -76,6 +78,7 @@ class MctsTree:
             node = MctsTree(session=self.session, fen=brd.fen(), 
                             prior_prob=prior_probability, move=move, 
                             parent=parent, board_value=self.board_value)
+            node.calcValue(0)
             self.children.append(node)
 
 

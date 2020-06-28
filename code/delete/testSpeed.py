@@ -190,3 +190,26 @@ t1 = time.time()
 
 total_n = t1-t0
 print("Cumulative time:", total_n)
+
+
+
+import chess, time
+
+fen = "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1"
+board = chess.Board(fen)
+moves = list(board.legal_moves)
+move = moves[1]
+
+
+t0 = time.time()
+for i in range(100_000):
+    # moves = board.legal_moves
+    # board = chess.Board(fen)
+    moves = list(board.legal_moves)
+    move = moves[1]
+    board.push(move)
+    
+t1 = time.time()
+
+total_n = t1-t0
+print("Cumulative time:", total_n)
