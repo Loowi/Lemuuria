@@ -203,13 +203,14 @@ move = moves[1]
 
 t0 = time.time()
 for i in range(100_000):
-    # moves = board.legal_moves
-    # board = chess.Board(fen)
-    moves = list(board.legal_moves)
-    move = moves[1]
-    board.push(move)
-    
+    moves = board.legal_moves  
 t1 = time.time()
 
 total_n = t1-t0
 print("Cumulative time:", total_n)
+
+
+    # board = chess.Board(fen)
+    moves = list(board.legal_moves)
+    move = moves[1]
+    board.push(move)

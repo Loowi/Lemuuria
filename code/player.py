@@ -11,6 +11,8 @@ import library as lib
 from enum import Enum
 from mcts import MctsTree
 import onnxruntime
+import pickle
+
 
 logger = getLogger(__name__)
 
@@ -24,16 +26,16 @@ class Player:
         self.session = session
         self.moves = []
 
-    def createNodes(self, fen):
-        root = MctsTree(self.session, fen)
-        root.addChildren(root)
+    def createNodes(self, fen, enumDict):
+        root = MctsTree(12, fen) # todo
+        root.addChildren(root, enumDict)
         return root
 
     def mtscMove(self, fen, enumDict):
-        for i in range(100):
+        for i in range(300000):
             if i == 0:
-                root = self.createNodes(fen)
-                node = self.createNodes(fen)
+                root = self.createNodes(fen, enumDict)
+                node = self.createNodes(fen, enumDict)
                 # kala1 = [child.adjust_value for child in node.children]
                 # print(kala1)
                 
@@ -42,25 +44,39 @@ class Player:
 
             if finished:  # recursion to the top, update values based on result
                 # print('End')
-                node = self.update_values(node)  # todo: recursion
+                terminal_node_value = node.board_value * node.white_to_move
+                node = self.update_values(node, terminal_node_value)  # todo: recursion
 
 
             elif not node.children:  # Spawn a child and recursion to the top
                 # print('No children')
-                node.addChildren(node)
-                node = self.update_values(node)
+                node.addChildren(node, enumDict)
+                terminal_node_value = node.board_value * node.white_to_move
+                node = self.update_values(node, terminal_node_value)
 
             else:  # pick a child and go deeper
                 # print('Explore')
                 node = self.next_step(node)
 
-        node = self.update_values(node)
+        terminal_node_value = node.board_value * node.white_to_move
+        node = self.update_values(node, terminal_node_value)
         # print('BestMove:', len(node.children), node.move, node.fen)
         # kala2 = [child.adjust_value for child in node.children]
         # print(kala2)
 
+        print(node.fen)
+        for child in node.children:
+            
+            print(child)
+        
+        print()
+
         move = self.returnBestMove(node.children)
         value = node.mean_value
+
+        file_name = 'node_' + str(i) + '.pkl'
+        with open(file_name, 'wb') as f:
+            pickle.dump(node, f)
 
         return move, value
 
@@ -78,19 +94,29 @@ class Player:
                 best_node = child
         return best_node 
 
+        # probs = [child.adjust_value+1 for child in node.children]
+        # probs = np.array(probs)
+        # probs /= probs.sum()
+        # node = np.random.choice(node.children, p=probs)
+        # best_node = node
+        # return best_node 
+
     def returnBestMove(self, children):
         best_value = -np.inf
         for child in children:
             if child.adjust_value > best_value:  # should be probability based
                 best_value = child.adjust_value
-                best_move = child.move
+                best_move = child.move     
         return best_move       
 
-    def update_values(self, node):  # recursion
+    def update_values(self, node, terminal_node_value):  # recursion
         if node.parent:
+            node.calcValue(terminal_node_value)
             parent = node.parent
-            parent.calcValue(node.board_value)
-            return(self.update_values(parent))
+            # parent.board_value = node.board_value #* node.white_to_move TODO!!!
+            # parent.terminal_node_value = node.board_value
+            parent.calcValue(terminal_node_value)
+            return(self.update_values(parent, terminal_node_value))
         else:
             return node
 

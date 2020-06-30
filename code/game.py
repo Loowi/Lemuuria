@@ -30,8 +30,8 @@ class Game:
         :ivar str result: str encoding of the result, 1-0, 0-1, or 1/2-1/2
     """
 
-    def __init__(self, player1=None, player2=None):
-        self.board = chess.Board()
+    def __init__(self, player1=None, player2=None, game=None):
+        self.board = game 
         self.num_halfmoves = 0
         self.result = None
         self.white_to_move = 1
@@ -76,10 +76,10 @@ class Game:
         with open(fileName, 'w') as writer:
             writer.write(boardsvg)
     
-    def play_game(self, game):
+    def play_game(self):
 
         while not self.finished:
-            fen = game.board.fen()
+            fen = self.board.fen()
             if self.white_to_move:
                 
                 # kala = self.Player1.mtscMove(fen, self.Player1, enumDict)
@@ -92,10 +92,12 @@ class Game:
             else:
                 move, value = self.Player2.moveSimple(fen, enumDict)
 
+            print(move)
+
             self.step(move)
             self.game_over()
-            # self.display_game(value)
+            self.display_game(value)
             # self.save_pics()
             
-            
+        self.display_pgn()
             
